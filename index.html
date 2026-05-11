@@ -1,0 +1,824 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>MediSafe AI — PM Case Study | Yana Ajjamada</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=DM+Mono:ital,wght@0,400;0,500;1,400&family=Literata:ital,wght@0,300;0,400;1,300&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #06060a;
+  --bg2: #0e0e14;
+  --bg3: #16161e;
+  --bg4: #1c1c26;
+  --border: rgba(255,255,255,0.07);
+  --border2: rgba(255,255,255,0.13);
+  --text: #eeeef4;
+  --muted: #7878a0;
+  --muted2: #a0a0c0;
+  --violet: #8b7fff;
+  --violet2: #b8b0ff;
+  --green: #3de8a0;
+  --red: #ff6b6b;
+  --amber: #ffb84d;
+  --font-display: 'Syne', sans-serif;
+  --font-body: 'Literata', serif;
+  --font-mono: 'DM Mono', monospace;
+}
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+body { background: var(--bg); color: var(--text); font-family: var(--font-body); font-size: 16px; line-height: 1.75; overflow-x: hidden; }
+
+nav {
+  position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+  padding: 0 48px; height: 58px;
+  display: flex; align-items: center;
+  background: rgba(6,6,10,0.85); backdrop-filter: blur(20px);
+  border-bottom: 0.5px solid var(--border);
+}
+.nav-logo { font-family: var(--font-display); font-size: 15px; font-weight: 800; letter-spacing: -0.03em; color: var(--text); }
+.nav-logo em { color: var(--violet); font-style: normal; }
+.nav-links { display: flex; gap: 28px; margin-left: auto; }
+.nav-links a { font-family: var(--font-mono); font-size: 11px; color: var(--muted); text-decoration: none; letter-spacing: 0.05em; transition: color 0.2s; }
+.nav-links a:hover { color: var(--text); }
+.nav-pill { margin-left: 24px; background: rgba(255,184,77,0.1); border: 0.5px solid rgba(255,184,77,0.3); border-radius: 2em; padding: 4px 14px; font-family: var(--font-mono); font-size: 10px; color: var(--amber); letter-spacing: 0.05em; }
+
+.hero { min-height: 100vh; display: flex; align-items: center; padding: 100px 48px 80px; position: relative; overflow: hidden; }
+.hero-mesh { position: absolute; inset: 0; z-index: 0; pointer-events: none; background: radial-gradient(ellipse 60% 50% at 20% 40%, rgba(139,127,255,0.1) 0%, transparent 70%), radial-gradient(ellipse 40% 40% at 80% 70%, rgba(61,232,160,0.06) 0%, transparent 70%), radial-gradient(ellipse 50% 60% at 60% 10%, rgba(255,107,107,0.04) 0%, transparent 70%); }
+.hero-grid-lines { position: absolute; inset: 0; z-index: 0; pointer-events: none; background-image: linear-gradient(rgba(139,127,255,0.04) 1px, transparent 1px), linear-gradient(90deg, rgba(139,127,255,0.04) 1px, transparent 1px); background-size: 80px 80px; mask-image: radial-gradient(ellipse 80% 80% at 50% 50%, black 0%, transparent 100%); }
+.hero-inner { position: relative; z-index: 1; max-width: 1000px; }
+.hero-eyebrow { display: inline-flex; align-items: center; gap: 10px; font-family: var(--font-mono); font-size: 11px; color: var(--muted); letter-spacing: 0.1em; text-transform: uppercase; margin-bottom: 32px; }
+.hero-eyebrow::before { content: ''; display: block; width: 24px; height: 0.5px; background: var(--violet); }
+.hero h1 { font-family: var(--font-display); font-weight: 800; font-size: clamp(48px, 8vw, 96px); line-height: 0.95; letter-spacing: -0.04em; margin-bottom: 32px; }
+.hero h1 .l2 { color: var(--violet2); display: block; }
+.hero h1 .l3 { color: var(--muted); display: block; font-weight: 400; }
+.hero h1 .l3i { color: var(--muted); display: block; font-weight: 400; font-style: italic; }
+.hero-desc { font-size: 17px; color: var(--muted2); max-width: 560px; line-height: 1.8; margin-bottom: 32px; font-style: italic; }
+.hero-desc strong { color: var(--text); font-style: normal; font-weight: 400; }
+.hero-disclaimer { display: inline-flex; align-items: flex-start; gap: 10px; background: rgba(255,184,77,0.08); border: 0.5px solid rgba(255,184,77,0.25); border-radius: 8px; padding: 12px 18px; font-family: var(--font-mono); font-size: 11px; color: var(--amber); letter-spacing: 0.04em; margin-bottom: 48px; max-width: 640px; line-height: 1.7; }
+.hero-stats { display: flex; gap: 48px; flex-wrap: wrap; padding-top: 40px; border-top: 0.5px solid var(--border); }
+.hstat-val { font-family: var(--font-display); font-size: 36px; font-weight: 800; letter-spacing: -0.03em; line-height: 1; }
+.hstat-lbl { font-family: var(--font-mono); font-size: 10px; color: var(--muted); letter-spacing: 0.08em; text-transform: uppercase; margin-top: 6px; }
+
+.container { max-width: 1100px; margin: 0 auto; padding: 0 48px; }
+.section { padding: 100px 0; }
+.section-num { font-family: var(--font-mono); font-size: 10px; color: var(--muted); letter-spacing: 0.12em; text-transform: uppercase; margin-bottom: 10px; }
+.section-title { font-family: var(--font-display); font-size: clamp(28px, 4vw, 44px); font-weight: 800; letter-spacing: -0.03em; line-height: 1.05; margin-bottom: 16px; }
+.section-sub { font-size: 15px; color: var(--muted2); max-width: 520px; line-height: 1.8; margin-bottom: 48px; font-style: italic; }
+hr.sep { border: none; border-top: 0.5px solid var(--border); }
+
+.badge-row { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 36px; }
+.badge { padding: 4px 12px; border-radius: 2em; font-family: var(--font-mono); font-size: 10px; letter-spacing: 0.05em; border: 0.5px solid; }
+.b-v { background: rgba(139,127,255,0.08); color: var(--violet); border-color: rgba(139,127,255,0.3); }
+.b-g { background: rgba(61,232,160,0.08); color: var(--green); border-color: rgba(61,232,160,0.3); }
+.b-a { background: rgba(255,184,77,0.08); color: var(--amber); border-color: rgba(255,184,77,0.3); }
+.b-r { background: rgba(255,107,107,0.08); color: var(--red); border-color: rgba(255,107,107,0.3); }
+
+.problem-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+.prob-card { border-radius: 16px; padding: 32px; }
+.prob-card.problem { background: rgba(255,107,107,0.05); border: 0.5px solid rgba(255,107,107,0.2); }
+.prob-card.solution { background: rgba(61,232,160,0.05); border: 0.5px solid rgba(61,232,160,0.2); }
+.prob-tag { font-family: var(--font-mono); font-size: 10px; letter-spacing: 0.1em; text-transform: uppercase; margin-bottom: 16px; display: flex; align-items: center; gap: 8px; }
+.prob-card.problem .prob-tag { color: var(--red); }
+.prob-card.solution .prob-tag { color: var(--green); }
+.prob-tag::before { content: ''; width: 6px; height: 6px; border-radius: 50%; background: currentColor; display: block; }
+.prob-card p { color: var(--muted2); font-size: 14px; line-height: 1.8; }
+.prob-card p strong { color: var(--text); font-weight: 500; }
+.prob-card ul { margin: 12px 0 0; padding: 0; list-style: none; }
+.prob-card ul li { font-size: 13px; color: var(--muted); padding: 4px 0; display: flex; align-items: flex-start; gap: 8px; }
+.prob-card ul li::before { content: '—'; color: var(--muted); flex-shrink: 0; }
+
+.kpi-strip { display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; margin-top: 40px; }
+.kpi { background: var(--bg2); border: 0.5px solid var(--border); border-radius: 14px; padding: 24px 20px; position: relative; overflow: hidden; transition: border-color 0.2s, transform 0.2s; }
+.kpi:hover { border-color: var(--border2); transform: translateY(-2px); }
+.kpi-accent { position: absolute; top: 0; left: 0; right: 0; height: 2px; }
+.kpi-val { font-family: var(--font-display); font-size: 28px; font-weight: 800; letter-spacing: -0.03em; line-height: 1; margin-bottom: 8px; }
+.kpi-lbl { font-family: var(--font-mono); font-size: 10px; color: var(--muted); letter-spacing: 0.06em; text-transform: uppercase; line-height: 1.5; }
+
+.persona-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px; }
+.persona { background: var(--bg2); border: 0.5px solid var(--border); border-radius: 16px; padding: 28px; transition: border-color 0.2s; }
+.persona:hover { border-color: var(--border2); }
+.persona-top { display: flex; align-items: flex-start; gap: 14px; margin-bottom: 20px; }
+.av { width: 48px; height: 48px; border-radius: 12px; flex-shrink: 0; display: flex; align-items: center; justify-content: center; font-family: var(--font-display); font-size: 13px; font-weight: 800; }
+.persona-name { font-family: var(--font-display); font-size: 16px; font-weight: 700; letter-spacing: -0.02em; margin-bottom: 2px; }
+.persona-role { font-family: var(--font-mono); font-size: 10px; color: var(--muted); letter-spacing: 0.06em; text-transform: uppercase; }
+.persona-pain { font-size: 13px; color: var(--muted2); line-height: 1.75; margin-bottom: 16px; font-style: italic; }
+.persona-need { background: var(--bg3); border-radius: 10px; padding: 12px 14px; font-family: var(--font-mono); font-size: 11px; color: var(--text); line-height: 1.65; border-left: 2px solid var(--violet); }
+.persona-goal-label { font-size: 10px; color: var(--violet); letter-spacing: 0.08em; text-transform: uppercase; margin-bottom: 4px; }
+
+.comp-wrap { background: var(--bg2); border: 0.5px solid var(--border); border-radius: 16px; overflow: hidden; }
+.comp-table { width: 100%; border-collapse: collapse; }
+.comp-table th { text-align: left; font-family: var(--font-mono); font-size: 10px; color: var(--muted); letter-spacing: 0.08em; text-transform: uppercase; padding: 14px 16px; border-bottom: 0.5px solid var(--border2); background: var(--bg3); }
+.comp-table td { padding: 13px 16px; border-bottom: 0.5px solid var(--border); font-size: 12px; color: var(--muted2); vertical-align: middle; }
+.comp-table td:first-child { font-weight: 600; color: var(--text); font-family: var(--font-display); letter-spacing: -0.01em; font-size: 13px; }
+.comp-table tr:last-child td { border-bottom: none; }
+.comp-table tr.winner td { background: rgba(139,127,255,0.06); }
+.comp-table tr.winner td:first-child { color: var(--violet2); }
+.comp-table tr:hover:not(.winner) td { background: var(--bg3); }
+.ck { color: var(--green); } .cx { color: var(--red); } .cp { color: var(--amber); }
+.wb { display: inline-flex; align-items: center; gap: 5px; background: rgba(139,127,255,0.12); border: 0.5px solid rgba(139,127,255,0.3); border-radius: 2em; padding: 2px 9px; font-family: var(--font-mono); font-size: 10px; color: var(--violet); }
+.gap-box { background: rgba(139,127,255,0.06); border: 0.5px solid rgba(139,127,255,0.2); border-radius: 12px; padding: 20px 24px; margin-top: 20px; font-size: 14px; color: var(--muted2); line-height: 1.8; }
+.gap-box strong { color: var(--violet2); font-weight: 500; }
+
+.flow-wrap { display: grid; grid-template-columns: repeat(4, 1fr); gap: 0; align-items: start; }
+.flow-step { position: relative; }
+.flow-connector { position: absolute; right: -12px; top: 36px; color: var(--muted); font-size: 16px; z-index: 1; }
+.flow-card { background: var(--bg2); border: 0.5px solid var(--border); border-radius: 14px; padding: 20px 16px; margin: 0 8px; text-align: center; }
+.flow-icon { font-size: 20px; margin-bottom: 10px; }
+.flow-title { font-family: var(--font-display); font-size: 13px; font-weight: 700; margin-bottom: 6px; letter-spacing: -0.01em; }
+.flow-desc { font-size: 11px; color: var(--muted); line-height: 1.6; }
+
+.feat-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
+.feat-card { background: var(--bg2); border: 0.5px solid var(--border); border-radius: 16px; padding: 24px; transition: border-color 0.2s, transform 0.2s; }
+.feat-card:hover { border-color: var(--border2); transform: translateY(-2px); }
+.feat-num { font-family: var(--font-mono); font-size: 10px; color: var(--muted); letter-spacing: 0.08em; margin-bottom: 14px; }
+.feat-title { font-family: var(--font-display); font-size: 15px; font-weight: 700; letter-spacing: -0.02em; margin-bottom: 10px; }
+.feat-desc { font-size: 13px; color: var(--muted2); line-height: 1.7; }
+.feat-scope { font-family: var(--font-mono); font-size: 10px; color: var(--violet); letter-spacing: 0.06em; margin-top: 12px; }
+
+.mockup-section { display: flex; flex-direction: column; gap: 48px; }
+.mockup-row { display: grid; grid-template-columns: 1fr 1fr; gap: 40px; align-items: center; }
+.mockup-label { font-family: var(--font-mono); font-size: 10px; color: var(--violet); letter-spacing: 0.1em; text-transform: uppercase; margin-bottom: 10px; }
+.mockup-title { font-family: var(--font-display); font-size: 22px; font-weight: 700; letter-spacing: -0.02em; margin-bottom: 12px; }
+.mockup-desc { font-size: 14px; color: var(--muted2); line-height: 1.8; font-style: italic; }
+.mockup-frame { background: var(--bg2); border: 0.5px solid var(--border); border-radius: 16px; overflow: hidden; aspect-ratio: 4/3; display: flex; align-items: center; justify-content: center; }
+.mockup-frame img { width: 100%; height: 100%; object-fit: cover; }
+.mockup-placeholder { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 12px; text-align: center; padding: 32px; }
+.mp-icon { font-size: 28px; opacity: 0.25; }
+.mp-text { font-family: var(--font-mono); font-size: 11px; color: var(--muted); letter-spacing: 0.05em; line-height: 1.7; }
+.mp-hint { font-family: var(--font-mono); font-size: 10px; color: rgba(139,127,255,0.5); margin-top: 4px; }
+
+.rm-timeline { position: relative; }
+.rm-timeline::before { content: ''; position: absolute; left: 119px; top: 0; bottom: 0; width: 0.5px; background: var(--border2); }
+.rm-row { display: grid; grid-template-columns: 120px 1fr; gap: 0; margin-bottom: 4px; }
+.rm-phase-label { padding: 16px 20px 16px 0; text-align: right; font-family: var(--font-mono); font-size: 10px; color: var(--muted); letter-spacing: 0.06em; text-transform: uppercase; line-height: 1.5; position: relative; }
+.rm-phase-label::after { content: ''; position: absolute; right: -5px; top: 24px; width: 10px; height: 10px; border-radius: 50%; border: 2px solid var(--bg); background: var(--border2); }
+.rm-row.shipped .rm-phase-label::after { background: var(--green); }
+.rm-row.next .rm-phase-label::after { background: var(--violet); }
+.rm-row.future .rm-phase-label::after { background: var(--bg3); border-color: var(--border2); }
+.rm-items { padding: 10px 0 10px 32px; display: flex; flex-direction: column; gap: 10px; }
+.rm-item { background: var(--bg2); border: 0.5px solid var(--border); border-radius: 12px; padding: 16px 20px; display: flex; align-items: flex-start; gap: 14px; }
+.rm-row.shipped .rm-item { border-left: 2px solid var(--green); }
+.rm-row.next .rm-item { border-left: 2px solid var(--violet); }
+.rm-row.future .rm-item { opacity: 0.5; }
+.rm-dot { width: 8px; height: 8px; border-radius: 50%; margin-top: 5px; flex-shrink: 0; }
+.rm-title { font-family: var(--font-display); font-size: 14px; font-weight: 700; letter-spacing: -0.01em; margin-bottom: 3px; }
+.rm-desc { font-size: 12px; color: var(--muted2); line-height: 1.65; }
+.rm-tag { font-family: var(--font-mono); font-size: 10px; padding: 2px 9px; border-radius: 2em; margin-top: 6px; display: inline-block; letter-spacing: 0.04em; }
+
+.metrics-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px; }
+.metric-card { background: var(--bg2); border: 0.5px solid var(--border); border-radius: 14px; padding: 24px; }
+.metric-name { font-family: var(--font-mono); font-size: 10px; color: var(--muted); letter-spacing: 0.08em; text-transform: uppercase; margin-bottom: 8px; }
+.metric-val { font-family: var(--font-display); font-size: 28px; font-weight: 800; letter-spacing: -0.03em; margin-bottom: 4px; }
+.metric-sub { font-size: 12px; color: var(--muted); margin-bottom: 14px; line-height: 1.6; }
+.mbar { height: 3px; background: var(--bg4); border-radius: 2px; overflow: hidden; }
+.mbar-fill { height: 100%; border-radius: 2px; }
+
+.decision-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
+.decision-card { background: var(--bg2); border: 0.5px solid var(--border); border-radius: 14px; padding: 24px; }
+.dec-num { font-family: var(--font-mono); font-size: 10px; color: var(--muted); margin-bottom: 14px; }
+.dec-title { font-family: var(--font-display); font-size: 14px; font-weight: 700; letter-spacing: -0.01em; margin-bottom: 10px; }
+.dec-chosen { font-size: 12px; color: var(--green); font-family: var(--font-mono); margin-bottom: 8px; }
+.dec-why { font-size: 12px; color: var(--muted2); line-height: 1.7; }
+
+.risk-wrap { background: var(--bg2); border: 0.5px solid var(--border); border-radius: 16px; overflow: hidden; }
+.risk-table { width: 100%; border-collapse: collapse; }
+.risk-table th { text-align: left; font-family: var(--font-mono); font-size: 10px; color: var(--muted); letter-spacing: 0.08em; text-transform: uppercase; padding: 14px 18px; border-bottom: 0.5px solid var(--border2); background: var(--bg3); }
+.risk-table td { padding: 14px 18px; border-bottom: 0.5px solid var(--border); font-size: 13px; color: var(--muted2); vertical-align: top; }
+.risk-table td:first-child { color: var(--text); font-weight: 500; font-family: var(--font-display); letter-spacing: -0.01em; }
+.risk-table tr:last-child td { border-bottom: none; }
+.risk-table tr:hover td { background: var(--bg3); }
+.sev { padding: 3px 9px; border-radius: 2em; font-family: var(--font-mono); font-size: 10px; }
+.sev-c { background: rgba(255,107,107,0.15); color: var(--red); }
+.sev-h { background: rgba(255,107,107,0.1); color: var(--red); }
+.sev-m { background: rgba(255,184,77,0.12); color: var(--amber); }
+
+.about-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 40px; align-items: start; }
+.about-text p { font-size: 15px; color: var(--muted2); line-height: 1.85; margin-bottom: 18px; font-style: italic; }
+.about-text p strong { color: var(--text); font-style: normal; }
+.about-links { display: flex; flex-direction: column; gap: 10px; }
+.about-link { display: flex; align-items: center; gap: 12px; background: var(--bg2); border: 0.5px solid var(--border); border-radius: 12px; padding: 14px 18px; text-decoration: none; color: var(--text); font-family: var(--font-mono); font-size: 12px; transition: border-color 0.2s, background 0.2s; }
+.about-link:hover { border-color: var(--border2); background: var(--bg3); }
+.about-link-icon { width: 32px; height: 32px; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 14px; flex-shrink: 0; }
+.about-link-label { color: var(--muted); font-size: 10px; display: block; margin-bottom: 2px; letter-spacing: 0.05em; text-transform: uppercase; }
+
+footer { border-top: 0.5px solid var(--border); padding: 40px 48px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 20px; }
+.foot-logo { font-family: var(--font-display); font-size: 18px; font-weight: 800; letter-spacing: -0.03em; }
+.foot-logo em { color: var(--violet); font-style: normal; }
+.foot-meta { font-family: var(--font-mono); font-size: 10px; color: var(--muted); letter-spacing: 0.05em; line-height: 1.9; text-align: right; }
+.foot-meta a { color: var(--violet); text-decoration: none; }
+
+@keyframes fadeUp { from { opacity: 0; transform: translateY(24px); } to { opacity: 1; transform: translateY(0); } }
+.hero-inner > * { animation: fadeUp 0.7s ease both; }
+.hero-eyebrow { animation-delay: 0.1s; }
+.hero h1 { animation-delay: 0.2s; }
+.hero-desc { animation-delay: 0.3s; }
+.hero-disclaimer { animation-delay: 0.4s; }
+.hero-stats { animation-delay: 0.5s; }
+
+@media (max-width: 768px) {
+  nav { padding: 0 20px; } .nav-links { display: none; }
+  .hero { padding: 90px 20px 60px; }
+  .container { padding: 0 20px; }
+  .section { padding: 70px 0; }
+  .problem-grid, .kpi-strip, .persona-grid, .feat-grid, .metrics-grid, .decision-grid, .mockup-row, .about-grid, .flow-wrap { grid-template-columns: 1fr; }
+  .rm-timeline::before { display: none; }
+  .rm-row { grid-template-columns: 1fr; }
+  .rm-phase-label { text-align: left; padding: 8px 0; border-right: none; }
+  .rm-phase-label::after { display: none; }
+  footer { padding: 30px 20px; flex-direction: column; align-items: flex-start; }
+  .foot-meta { text-align: left; }
+  .comp-table { font-size: 11px; }
+  .comp-table th, .comp-table td { padding: 10px 10px; }
+}
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="nav-logo">Medi<em>Safe</em> AI</div>
+  <div class="nav-links">
+    <a href="#problem">Problem</a>
+    <a href="#personas">Personas</a>
+    <a href="#competitive">Competitive</a>
+    <a href="#roadmap">Roadmap</a>
+    <a href="#metrics">Metrics</a>
+    <a href="#risks">Risks</a>
+  </div>
+  <span class="nav-pill">⚠ Concept · Not yet built</span>
+</nav>
+
+<!-- HERO -->
+<div class="hero">
+  <div class="hero-mesh"></div>
+  <div class="hero-grid-lines"></div>
+  <div class="hero-inner">
+    <div class="hero-eyebrow">PM Case Study · AI in Healthcare · Yana Ajjamada</div>
+    <h1>Medi<em style="color:var(--violet2);font-style:normal;">Safe</em><span class="l2">AI.</span><span class="l3">Drug safety,</span><span class="l3i">reimagined.</span></h1>
+    <p class="hero-desc">An AI-powered drug interaction and side effect predictor designed to help doctors and pharmacists make <strong>faster, safer prescription decisions</strong> and prevent the 60% of adverse drug events that are entirely avoidable.</p>
+    <div class="hero-disclaimer">
+      ⚠ &nbsp;This is a product concept and PM case study. No code has been built. The purpose is to demonstrate end-to-end product management thinking — problem framing, competitive analysis, user personas, roadmap, success metrics, and risk assessment.
+    </div>
+    <div class="hero-stats">
+      <div><div class="hstat-val" style="color:var(--red);">125,000+</div><div class="hstat-lbl">Deaths/yr from adverse drug events (US)</div></div>
+      <div><div class="hstat-val" style="color:var(--amber);">$30B+</div><div class="hstat-lbl">Annual cost of drug-related morbidity</div></div>
+      <div><div class="hstat-val" style="color:var(--violet);">60%</div><div class="hstat-lbl">Of adverse events are preventable</div></div>
+    </div>
+  </div>
+</div>
+
+<hr class="sep">
+
+<!-- PROBLEM -->
+<section id="problem">
+  <div class="container">
+    <div class="section-num">01 — Problem &amp; solution</div>
+    <div class="section-title">A preventable crisis.<br>An unsolved problem.</div>
+    <div class="section-sub">Doctors prescribe dozens of medications daily. No tool today combines instant interaction checking, AI-predicted side effects, and personalised patient context in one simple, affordable interface.</div>
+    <div class="badge-row">
+      <span class="badge b-r">Problem space: drug safety</span>
+      <span class="badge b-v">AI · ML · healthcare</span>
+      <span class="badge b-a">Primary users: doctors &amp; pharmacists</span>
+      <span class="badge b-g">Market: clinical decision support</span>
+    </div>
+    <div class="problem-grid">
+      <div class="prob-card problem">
+        <div class="prob-tag">The problem</div>
+        <p>Patients often take <strong>multiple medications simultaneously</strong>, dramatically increasing adverse interaction risk. Today's workflow is broken:</p>
+        <ul>
+          <li>Doctors rely on memory or scattered, outdated databases</li>
+          <li>Interaction checks are time-consuming and interrupt clinical flow</li>
+          <li>No tool personalises risk based on patient age, conditions, or history</li>
+          <li>Harmful combinations go undetected until a patient is already harmed</li>
+        </ul>
+      </div>
+      <div class="prob-card solution">
+        <div class="prob-tag">The solution</div>
+        <p>MediSafe AI gives healthcare professionals <strong>instant, personalised drug safety intelligence</strong> at the point of prescription:</p>
+        <ul>
+          <li>Detects drug–drug interactions in under 2 seconds</li>
+          <li>Predicts likely side effects with AI-ranked severity scoring</li>
+          <li>Personalises risk based on age, gender, and existing conditions</li>
+          <li>Surfaces actionable recommendations — not just raw warnings</li>
+        </ul>
+      </div>
+    </div>
+    <div class="kpi-strip">
+      <div class="kpi"><div class="kpi-accent" style="background:var(--green);"></div><div class="kpi-val" style="color:var(--green);">&lt; 2s</div><div class="kpi-lbl">Target interaction check response time</div></div>
+      <div class="kpi"><div class="kpi-accent" style="background:var(--violet);"></div><div class="kpi-val" style="color:var(--violet);">95%+</div><div class="kpi-lbl">Target prediction accuracy for known interactions</div></div>
+      <div class="kpi"><div class="kpi-accent" style="background:var(--amber);"></div><div class="kpi-val" style="color:var(--amber);">30%</div><div class="kpi-lbl">Target reduction in missed interaction alerts</div></div>
+      <div class="kpi"><div class="kpi-accent" style="background:var(--red);"></div><div class="kpi-val" style="color:var(--red);">3 min</div><div class="kpi-lbl">Target time saved per prescription for doctors</div></div>
+    </div>
+  </div>
+</section>
+
+<hr class="sep">
+
+<!-- PERSONAS -->
+<section id="personas">
+  <div class="container">
+    <div class="section-num">02 — User personas</div>
+    <div class="section-title">Who we're building for</div>
+    <div class="section-sub">Four distinct users with different contexts, pain points, and definitions of success. Each persona drives a specific product requirement.</div>
+    <div class="persona-grid">
+      <div class="persona">
+        <div class="persona-top">
+          <div class="av" style="background:rgba(139,127,255,0.15);color:var(--violet);">Dr</div>
+          <div><div class="persona-name">Dr. Priya Mehta</div><div class="persona-role">General physician · Primary care</div></div>
+        </div>
+        <p class="persona-pain">"I see 40 patients a day. I can't memorise every interaction for every drug combination. I need something that fits into my workflow — not something that slows it down."</p>
+        <div class="persona-need"><div class="persona-goal-label">Core need</div>Fast, reliable interaction alerts embedded in the prescription workflow — with clear severity levels, not just raw clinical data.</div>
+      </div>
+      <div class="persona">
+        <div class="persona-top">
+          <div class="av" style="background:rgba(61,232,160,0.15);color:var(--green);">Rx</div>
+          <div><div class="persona-name">Rajan Pillai</div><div class="persona-role">Pharmacist · Hospital dispensary</div></div>
+        </div>
+        <p class="persona-pain">"Patients come in with prescriptions from multiple doctors. I'm the last line of defence before a dangerous combination reaches them — but my tools are fifteen years old."</p>
+        <div class="persona-need"><div class="persona-goal-label">Core need</div>A comprehensive multi-drug checker that flags combinations across an entire medication list — not just two drugs at a time.</div>
+      </div>
+      <div class="persona">
+        <div class="persona-top">
+          <div class="av" style="background:rgba(255,184,77,0.15);color:var(--amber);">Pt</div>
+          <div><div class="persona-name">Anita Sharma</div><div class="persona-role">Patient · Managing 4+ chronic conditions</div></div>
+        </div>
+        <p class="persona-pain">"I take medicines from three different specialists. Nobody checks if they interact. I Google it myself but I don't understand the results and I don't know if I should be worried."</p>
+        <div class="persona-need"><div class="persona-goal-label">Core need</div>A plain-language summary of her personal medication risks — not clinical jargon — with a clear action she can take.</div>
+      </div>
+      <div class="persona">
+        <div class="persona-top">
+          <div class="av" style="background:rgba(255,107,107,0.15);color:var(--red);">HO</div>
+          <div><div class="persona-name">Hospital operations lead</div><div class="persona-role">Administrator · 500-bed hospital</div></div>
+        </div>
+        <p class="persona-pain">"Adverse drug events are our biggest liability. Each incident costs us in litigation, extended stays, and reputation. We need data on where risks are happening across the hospital."</p>
+        <div class="persona-need"><div class="persona-goal-label">Core need</div>A hospital-wide dashboard showing interaction alert trends, high-risk departments, and compliance metrics for audit.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<hr class="sep">
+
+<!-- COMPETITIVE -->
+<section id="competitive">
+  <div class="container">
+    <div class="section-num">03 — Competitive analysis</div>
+    <div class="section-title">The market gap<br>MediSafe AI fills</div>
+    <div class="section-sub">Six players exist in the drug safety space. None combine instant interaction checking, AI side effect prediction, and personalised patient context in one affordable tool.</div>
+    <div class="comp-wrap">
+      <table class="comp-table">
+        <tr>
+          <th>Product</th>
+          <th>Target user</th>
+          <th>Interaction check</th>
+          <th>AI side effect prediction</th>
+          <th>Patient personalisation</th>
+          <th>Pricing</th>
+          <th>Key gap</th>
+        </tr>
+        <tr>
+          <td>Drugs.com checker</td>
+          <td>General public</td>
+          <td><span class="ck">✓</span> Basic</td>
+          <td><span class="cx">✗</span> None</td>
+          <td><span class="cx">✗</span> None</td>
+          <td>Free</td>
+          <td>No clinical depth or personalisation</td>
+        </tr>
+        <tr>
+          <td>Epocrates</td>
+          <td>Doctors</td>
+          <td><span class="ck">✓</span> Good</td>
+          <td><span class="cx">✗</span> None</td>
+          <td><span class="cp">~</span> Limited</td>
+          <td>$17/mo</td>
+          <td>No AI prediction layer, expensive</td>
+        </tr>
+        <tr>
+          <td>Medscape checker</td>
+          <td>Clinicians</td>
+          <td><span class="ck">✓</span> Good</td>
+          <td><span class="cx">✗</span> None</td>
+          <td><span class="cx">✗</span> None</td>
+          <td>Free</td>
+          <td>No personalisation or AI prediction</td>
+        </tr>
+        <tr>
+          <td>IBM Micromedex</td>
+          <td>Hospitals</td>
+          <td><span class="ck">✓</span> Excellent</td>
+          <td><span class="cp">~</span> Partial</td>
+          <td><span class="cp">~</span> Some</td>
+          <td>Enterprise only</td>
+          <td>Inaccessible to individual doctors</td>
+        </tr>
+        <tr>
+          <td>UpToDate</td>
+          <td>Clinicians</td>
+          <td><span class="cp">~</span> Indirect</td>
+          <td><span class="cx">✗</span> None</td>
+          <td><span class="cx">✗</span> None</td>
+          <td>$600+/yr</td>
+          <td>Not built for interaction checking</td>
+        </tr>
+        <tr>
+          <td>Epic EHR alerts</td>
+          <td>Hospital systems</td>
+          <td><span class="ck">✓</span> Good</td>
+          <td><span class="cx">✗</span> None</td>
+          <td><span class="ck">✓</span> Yes</td>
+          <td>Hospital contract</td>
+          <td>Only works inside Epic ecosystem</td>
+        </tr>
+        <tr class="winner">
+          <td>MediSafe AI <span class="wb">this product</span></td>
+          <td>Doctors, pharmacists, patients</td>
+          <td><span class="ck">✓</span> Real-time AI</td>
+          <td><span class="ck">✓</span> AI-powered</td>
+          <td><span class="ck">✓</span> Age, conditions, history</td>
+          <td>Freemium + Pro</td>
+          <td>— fills the gap</td>
+        </tr>
+      </table>
+    </div>
+    <div class="gap-box"><strong>The gap we fill:</strong> No tool today combines instant interaction checking + AI-predicted side effects + personalised patient context in a single simple interface that is affordable for individual doctors and works outside hospital EHR systems. MediSafe AI is built for exactly that gap.</div>
+  </div>
+</section>
+
+<hr class="sep">
+
+<!-- FLOW -->
+<section>
+  <div class="container">
+    <div class="section-num">04 — How it works</div>
+    <div class="section-title">System flow</div>
+    <div class="section-sub">From user input to actionable safety recommendation in under 2 seconds — four steps, one clean interface.</div>
+    <div class="flow-wrap">
+      <div class="flow-step">
+        <div class="flow-connector">→</div>
+        <div class="flow-card">
+          <div class="flow-icon">💊</div>
+          <div class="flow-title">User input</div>
+          <div class="flow-desc">Doctor enters Drug A + Drug B, patient age, gender, existing conditions</div>
+        </div>
+      </div>
+      <div class="flow-step">
+        <div class="flow-connector">→</div>
+        <div class="flow-card">
+          <div class="flow-icon">🗄</div>
+          <div class="flow-title">Drug database</div>
+          <div class="flow-desc">Query against public drug interaction datasets (FDA FAERS, DrugBank, OpenFDA)</div>
+        </div>
+      </div>
+      <div class="flow-step">
+        <div class="flow-connector">→</div>
+        <div class="flow-card">
+          <div class="flow-icon">🤖</div>
+          <div class="flow-title">AI model</div>
+          <div class="flow-desc">ML risk classifier predicts side effect probability and severity, personalised by patient context</div>
+        </div>
+      </div>
+      <div class="flow-step">
+        <div class="flow-card">
+          <div class="flow-icon">⚡</div>
+          <div class="flow-title">Output</div>
+          <div class="flow-desc">Risk level badge, predicted side effects ranked by severity, actionable recommendation</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<hr class="sep">
+
+<!-- FEATURES -->
+<section>
+  <div class="container">
+    <div class="section-num">05 — Core features</div>
+    <div class="section-title">What the product does</div>
+    <div class="section-sub">Six features — prioritised by user impact and build complexity. Features 1–3 are MVP scope. Features 4–6 are Phase 2 and beyond.</div>
+    <div class="feat-grid">
+      <div class="feat-card">
+        <div class="feat-num">Feature 01 · MVP · P0</div>
+        <div class="feat-title">Drug interaction checker</div>
+        <div class="feat-desc">Identifies harmful drug combinations instantly. Provides severity classification — Critical, High, Medium, Low — with a plain-language explanation of the mechanism of harm.</div>
+        <div class="feat-scope">Must have — core product value</div>
+      </div>
+      <div class="feat-card">
+        <div class="feat-num">Feature 02 · MVP · P0</div>
+        <div class="feat-title">AI side effect predictor</div>
+        <div class="feat-desc">Predicts the most likely adverse reactions for a drug combination, ranked by probability and severity. Goes beyond known interactions to surface probable but less-documented risks.</div>
+        <div class="feat-scope">Must have — key differentiator</div>
+      </div>
+      <div class="feat-card">
+        <div class="feat-num">Feature 03 · MVP · P0</div>
+        <div class="feat-title">Risk scoring system</div>
+        <div class="feat-desc">Assigns a composite risk score (0–100) combining interaction severity, side effect probability, and patient vulnerability. Helps doctors prioritise which alerts need immediate action.</div>
+        <div class="feat-scope">Must have — enables triage</div>
+      </div>
+      <div class="feat-card">
+        <div class="feat-num">Feature 04 · Phase 2 · P1</div>
+        <div class="feat-title">Patient personalisation</div>
+        <div class="feat-desc">Adjusts risk predictions based on individual patient profile — age, weight, kidney/liver function, and existing conditions. Turns a generic warning into a patient-specific alert.</div>
+        <div class="feat-scope">Important — drives retention</div>
+      </div>
+      <div class="feat-card">
+        <div class="feat-num">Feature 05 · Phase 2 · P1</div>
+        <div class="feat-title">Smart alerts dashboard</div>
+        <div class="feat-desc">A doctor-facing dashboard showing all active high-risk alerts across their patient list, recent checks, resolved alerts, and trend data. Enables proactive monitoring, not just reactive checking.</div>
+        <div class="feat-scope">Important — hospital adoption driver</div>
+      </div>
+      <div class="feat-card" style="border-style:dashed;opacity:0.55;">
+        <div class="feat-num">Feature 06 · Phase 3 · P2</div>
+        <div class="feat-title">EHR system integration</div>
+        <div class="feat-desc">API integration with Epic and Cerner to embed MediSafe AI directly into existing hospital prescription workflows. No tab switching — the check happens inside the tool doctors already use.</div>
+        <div class="feat-scope">Future — enterprise growth lever</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<hr class="sep">
+
+<!-- MOCKUPS -->
+<section>
+  <div class="container">
+    <div class="section-num">06 — Product mockups</div>
+    <div class="section-title">What it looks like</div>
+    <div class="section-sub">Three screens showing the core user journey — from entering drug details to receiving a risk verdict and monitoring all patients from the dashboard.</div>
+    <div class="mockup-section">
+      <div class="mockup-row">
+        <div>
+          <div class="mockup-label">Screen 1 — Input</div>
+          <div class="mockup-title">Enter drug details in seconds</div>
+          <p class="mockup-desc">The input screen is designed for clinical speed. Drug names autocomplete from a database of 20,000+ compounds. Patient context fields are optional but improve prediction accuracy significantly.</p>
+        </div>
+        <div class="mockup-frame">
+          <img src="mockup-input.png" alt="MediSafe AI input screen" onerror="this.style.display='none';this.nextElementSibling.style.display='flex';">
+          <div class="mockup-placeholder" style="display:none;">
+            <div class="mp-icon">🖼</div>
+            <div class="mp-text">mockup-input.png</div>
+            <div class="mp-hint">Upload your Canva mockup to this repo</div>
+          </div>
+        </div>
+      </div>
+      <div class="mockup-row" style="direction:rtl;">
+        <div style="direction:ltr;">
+          <div class="mockup-label">Screen 2 — Output</div>
+          <div class="mockup-title">Risk verdict — clear, fast, actionable</div>
+          <p class="mockup-desc">The output screen leads with the risk level badge. Predicted side effects are listed by severity. Every output ends with a specific recommendation the doctor can act on immediately.</p>
+        </div>
+        <div class="mockup-frame" style="direction:ltr;">
+          <img src="mockup-output.png" alt="MediSafe AI output screen" onerror="this.style.display='none';this.nextElementSibling.style.display='flex';">
+          <div class="mockup-placeholder" style="display:none;">
+            <div class="mp-icon">🖼</div>
+            <div class="mp-text">mockup-output.png</div>
+            <div class="mp-hint">Upload your Canva mockup to this repo</div>
+          </div>
+        </div>
+      </div>
+      <div class="mockup-row">
+        <div>
+          <div class="mockup-label">Screen 3 — Dashboard</div>
+          <div class="mockup-title">Monitor all patients at a glance</div>
+          <p class="mockup-desc">The doctor dashboard surfaces active high-risk alerts, recent check history, and monthly statistics. Designed to make proactive drug safety monitoring possible without adding workflow burden.</p>
+        </div>
+        <div class="mockup-frame">
+          <img src="mockup-dashboard.png" alt="MediSafe AI dashboard" onerror="this.style.display='none';this.nextElementSibling.style.display='flex';">
+          <div class="mockup-placeholder" style="display:none;">
+            <div class="mp-icon">🖼</div>
+            <div class="mp-text">mockup-dashboard.png</div>
+            <div class="mp-hint">Upload your Canva mockup to this repo</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<hr class="sep">
+
+<!-- ROADMAP -->
+<section id="roadmap">
+  <div class="container">
+    <div class="section-num">07 — Product roadmap</div>
+    <div class="section-title">Three phases.<br>One clear direction.</div>
+    <div class="section-sub">Prioritised from fastest user value to highest technical complexity. Each phase is validated with real users before the next begins.</div>
+    <div class="rm-timeline">
+      <div class="rm-row shipped">
+        <div class="rm-phase-label">MVP<br>Phase 1</div>
+        <div class="rm-items">
+          <div class="rm-item">
+            <div class="rm-dot" style="background:var(--green);"></div>
+            <div><div class="rm-title">Drug interaction checker — core engine</div><div class="rm-desc">Basic two-drug interaction check against public datasets. Severity classification into Critical / High / Medium / Low with plain-language explanation of the interaction mechanism.</div><span class="rm-tag" style="background:rgba(61,232,160,0.1);color:var(--green);">MVP scope</span></div>
+          </div>
+          <div class="rm-item">
+            <div class="rm-dot" style="background:var(--green);"></div>
+            <div><div class="rm-title">AI side effect prediction model</div><div class="rm-desc">Train ML classifier on FDA adverse event reporting data (FAERS) to predict likely side effects ranked by probability and severity for a given drug pair.</div><span class="rm-tag" style="background:rgba(61,232,160,0.1);color:var(--green);">MVP scope</span></div>
+          </div>
+          <div class="rm-item">
+            <div class="rm-dot" style="background:var(--green);"></div>
+            <div><div class="rm-title">Risk scoring &amp; recommendation engine</div><div class="rm-desc">Composite risk score combining interaction severity + side effect probability. Actionable recommendation output — a suggested next step for the prescriber, not just a warning flag.</div><span class="rm-tag" style="background:rgba(61,232,160,0.1);color:var(--green);">MVP scope</span></div>
+          </div>
+        </div>
+      </div>
+      <div class="rm-row next">
+        <div class="rm-phase-label">Phase 2<br>Next</div>
+        <div class="rm-items">
+          <div class="rm-item">
+            <div class="rm-dot" style="background:var(--violet);"></div>
+            <div><div class="rm-title">Patient personalisation layer</div><div class="rm-desc">Adjust risk predictions based on age, weight, kidney/liver function, and existing conditions. Turns generic alerts into patient-specific clinical intelligence.</div><span class="rm-tag" style="background:rgba(139,127,255,0.1);color:var(--violet);">Planned · Q3 2026</span></div>
+          </div>
+          <div class="rm-item">
+            <div class="rm-dot" style="background:var(--violet);"></div>
+            <div><div class="rm-title">Doctor dashboard &amp; multi-drug polypharmacy checker</div><div class="rm-desc">Monitor all active alerts across patient list. Extend beyond two-drug checks to full polypharmacy screening for patients on 5+ medications simultaneously.</div><span class="rm-tag" style="background:rgba(139,127,255,0.1);color:var(--violet);">Planned · Q4 2026</span></div>
+          </div>
+        </div>
+      </div>
+      <div class="rm-row future">
+        <div class="rm-phase-label">Phase 3<br>Future</div>
+        <div class="rm-items">
+          <div class="rm-item">
+            <div class="rm-dot" style="background:var(--muted);"></div>
+            <div><div class="rm-title">EHR system integration — Epic / Cerner API</div><div class="rm-desc">Embed MediSafe AI directly into existing hospital prescription workflows via API. No tab switching — the check happens inside the tool doctors already use.</div><span class="rm-tag" style="background:rgba(120,120,160,0.1);color:var(--muted);">Exploring</span></div>
+          </div>
+          <div class="rm-item">
+            <div class="rm-dot" style="background:var(--muted);"></div>
+            <div><div class="rm-title">Patient-facing mobile app</div><div class="rm-desc">Plain-language drug safety summaries for patients managing chronic conditions across multiple prescribers. Reduces anxiety and enables informed conversations with doctors.</div><span class="rm-tag" style="background:rgba(120,120,160,0.1);color:var(--muted);">Exploring</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<hr class="sep">
+
+<!-- METRICS -->
+<section id="metrics">
+  <div class="container">
+    <div class="section-num">08 — Success metrics</div>
+    <div class="section-title">How we know<br>it's working</div>
+    <div class="section-sub">Four metrics — one per key user need — that define what success looks like for MediSafe AI at 6 months post-launch.</div>
+    <div class="metrics-grid">
+      <div class="metric-card">
+        <div class="metric-name">Prediction accuracy</div>
+        <div class="metric-val" style="color:var(--green);">95%+</div>
+        <div class="metric-sub">Target accuracy for known drug interactions vs validated clinical databases. Measured against FDA FAERS and DrugBank ground truth.</div>
+        <div class="mbar"><div class="mbar-fill" style="width:95%;background:var(--green);"></div></div>
+      </div>
+      <div class="metric-card">
+        <div class="metric-name">Time saved per prescription</div>
+        <div class="metric-val" style="color:var(--violet);">3 min</div>
+        <div class="metric-sub">Average time saved per prescription vs manually checking interactions across databases. Validated through user testing with 10+ doctors before launch.</div>
+        <div class="mbar"><div class="mbar-fill" style="width:80%;background:var(--violet);"></div></div>
+      </div>
+      <div class="metric-card">
+        <div class="metric-name">Daily active users at 6 months</div>
+        <div class="metric-val" style="color:var(--amber);">500+</div>
+        <div class="metric-sub">Target DAU at 6 months post-launch. Achieved through hospital pilot partnerships and freemium individual sign-up growth across India and Southeast Asia.</div>
+        <div class="mbar"><div class="mbar-fill" style="width:70%;background:var(--amber);"></div></div>
+      </div>
+      <div class="metric-card">
+        <div class="metric-name">Reduction in missed alerts</div>
+        <div class="metric-val" style="color:var(--red);">30%</div>
+        <div class="metric-sub">Target reduction in adverse drug interactions in pilot hospital settings compared to baseline. Primary clinical impact metric tracked with hospital partners.</div>
+        <div class="mbar"><div class="mbar-fill" style="width:60%;background:var(--red);"></div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<hr class="sep">
+
+<!-- TRADE-OFFS -->
+<section>
+  <div class="container">
+    <div class="section-num">09 — Key product decisions &amp; trade-offs</div>
+    <div class="section-title">What we chose<br>and why</div>
+    <div class="section-sub">Every product decision involves trade-offs. Here's what was prioritised in MVP and the reasoning behind each choice.</div>
+    <div class="decision-grid">
+      <div class="decision-card">
+        <div class="dec-num">Decision 01</div>
+        <div class="dec-title">Simplicity over accuracy in MVP</div>
+        <div class="dec-chosen">✓ Chosen: Speed &amp; usability first</div>
+        <div class="dec-why">A more accurate deep learning model would take 6+ months to train. Speed to validate the concept with real users matters more at MVP stage. Accuracy improves in Phase 2 with real-world hospital data.</div>
+      </div>
+      <div class="decision-card">
+        <div class="dec-num">Decision 02</div>
+        <div class="dec-title">Public datasets over proprietary data</div>
+        <div class="dec-chosen">✓ Chosen: FDA FAERS &amp; DrugBank</div>
+        <div class="dec-why">Proprietary clinical data is expensive and requires regulatory agreements. Public datasets are immediately available, well-validated, and sufficient for MVP. Hospital data is incorporated in Phase 2 via pilots.</div>
+      </div>
+      <div class="decision-card">
+        <div class="dec-num">Decision 03</div>
+        <div class="dec-title">Web app before mobile app</div>
+        <div class="dec-chosen">✓ Chosen: Web app for MVP</div>
+        <div class="dec-why">Doctors primarily use desktop in clinical settings. A responsive web app reaches both desktop and mobile without the cost of two native apps. A dedicated mobile app comes in Phase 3 for the patient persona.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<hr class="sep">
+
+<!-- RISKS -->
+<section id="risks">
+  <div class="container">
+    <div class="section-num">10 — Risk register</div>
+    <div class="section-title">What could go wrong</div>
+    <div class="section-sub">Five real risks — rated by severity with a clear mitigation strategy for each. No product is risk-free; what matters is knowing the risks and planning ahead.</div>
+    <div class="risk-wrap">
+      <table class="risk-table">
+        <tr>
+          <th>Risk</th>
+          <th>Impact</th>
+          <th>Severity</th>
+          <th>Mitigation</th>
+        </tr>
+        <tr>
+          <td>Model predicts an incorrect safe interaction</td>
+          <td>Patient harm — the highest stakes failure mode</td>
+          <td><span class="sev sev-c">Critical</span></td>
+          <td>Position as decision support, never autonomous. Require doctor confirmation for all High-risk flags. Clear disclaimer on all outputs. Validate against gold-standard clinical databases before any launch.</td>
+        </tr>
+        <tr>
+          <td>Regulatory classification as medical device</td>
+          <td>FDA / CE mark requirements could delay launch 1–2 years</td>
+          <td><span class="sev sev-h">High</span></td>
+          <td>Early consultation with regulatory experts. Initial positioning as a "clinical reference tool" (lower burden) rather than diagnostic software. Legal review before MVP launch.</td>
+        </tr>
+        <tr>
+          <td>Low adoption due to workflow friction</td>
+          <td>Product fails to gain traction despite good technology</td>
+          <td><span class="sev sev-m">Medium</span></td>
+          <td>Co-design MVP with 5–10 doctors through user interviews and prototype testing before build. Freemium model removes cost barrier. Hospital pilot programme drives institutional adoption.</td>
+        </tr>
+        <tr>
+          <td>Drug database becomes outdated</td>
+          <td>Inaccurate interaction data — missed or false alerts</td>
+          <td><span class="sev sev-m">Medium</span></td>
+          <td>Automated weekly sync with FDA FAERS and DrugBank. Internal data quality monitoring with alerts when source databases update. Manual clinical review for flagged edge cases.</td>
+        </tr>
+        <tr>
+          <td>Patient data privacy and HIPAA compliance</td>
+          <td>Data breach — legal liability and complete trust destruction</td>
+          <td><span class="sev sev-m">Medium</span></td>
+          <td>MVP does not store any patient identifiable data. All processing is session-based and ephemeral. Full HIPAA compliance architecture designed before Phase 2 patient personalisation launches.</td>
+        </tr>
+      </table>
+    </div>
+  </div>
+</section>
+
+<hr class="sep">
+
+<!-- ABOUT -->
+<section>
+  <div class="container">
+    <div class="section-num">11 — About the PM</div>
+    <div class="section-title">Why I built<br>this case study</div>
+    <div class="about-grid">
+      <div class="about-text">
+        <p>I'm <strong>Yana Ajjamada</strong>, an M.Sc. Organic Chemistry graduate from St Joseph's University, Bengaluru. My research focused on AI-based pharmaceutical stability prediction — which showed me how computational tools can fundamentally change how the pharmaceutical industry operates.</p>
+        <p>MediSafe AI is a product concept I designed to demonstrate my transition into product management. My science background gives me a rare advantage in healthcare product thinking — I understand the domain deeply, not just the interface on top of it.</p>
+        <p>This case study shows my ability to <strong>identify a real market gap, frame it as a product problem, understand diverse users, analyse competitors, design a prioritised roadmap, and define measurable success metrics</strong> — the core skills of product management.</p>
+      </div>
+      <div class="about-links">
+        <a href="https://github.com/yanaajjamada" class="about-link" target="_blank">
+          <div class="about-link-icon" style="background:rgba(139,127,255,0.12);">⌥</div>
+          <div><span class="about-link-label">GitHub profile</span>github.com/yanaajjamada</div>
+        </a>
+        <a href="https://yanaajjamada.github.io/stabilityai-pharma-degradation" class="about-link" target="_blank">
+          <div class="about-link-icon" style="background:rgba(61,232,160,0.12);">🔬</div>
+          <div><span class="about-link-label">Also see — M.Sc. research project (real, built)</span>StabilityAI — Pharma degradation predictor</div>
+        </a>
+        <div class="about-link" style="cursor:default;">
+          <div class="about-link-icon" style="background:rgba(255,184,77,0.12);">🎓</div>
+          <div><span class="about-link-label">Education</span>M.Sc. Organic Chemistry · St Joseph's University, Bengaluru · 2026</div>
+        </div>
+        <div class="about-link" style="cursor:default;">
+          <div class="about-link-icon" style="background:rgba(255,107,107,0.12);">🏭</div>
+          <div><span class="about-link-label">Industry experience</span>Research intern · Microlabs Kudlu, Bengaluru · 2025–2026</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<hr class="sep">
+
+<footer>
+  <div>
+    <div class="foot-logo">Medi<em>Safe</em> AI</div>
+    <div style="font-family:var(--font-mono);font-size:10px;color:var(--muted);margin-top:8px;letter-spacing:0.05em;">PM Case Study · Concept project · Not yet built · 2026</div>
+  </div>
+  <div class="foot-meta">
+    Designed &amp; authored by Yana Ajjamada<br>
+    M.Sc. Organic Chemistry · St Joseph's University, Bengaluru<br>
+    <a href="https://github.com/yanaajjamada">github.com/yanaajjamada</a>
+  </div>
+</footer>
+
+</body>
+</html>
